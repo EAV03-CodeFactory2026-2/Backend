@@ -6,6 +6,7 @@ import com.udea.Backend.Usuarios.Repositories.RolRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.Arrays;
  * Verifica si la tabla de roles está vacía y, de ser así, inserta los roles por defecto.
  */
 @Component
+@Order(1)
 @RequiredArgsConstructor
 @Slf4j
 public class RolDataSeeder implements CommandLineRunner {
