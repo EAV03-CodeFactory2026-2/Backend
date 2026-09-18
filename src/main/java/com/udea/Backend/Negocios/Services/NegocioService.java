@@ -26,7 +26,7 @@ public class NegocioService {
     public Negocio crearNegocio(NegocioCreateRequest request, Integer usuarioIdAutenticado) {
         // Escenario 3: Validación de identificación fiscal duplicada (insensible a mayúsculas/minúsculas)
         if (negocioRepository.existsByIdentificacionFiscalIgnoreCase(request.getIdentificacionFiscal())) {
-            throw new IllegalArgumentException("La identificación fiscal ya está en uso en la plataforma.");
+            throw new com.udea.Backend.Plataforma.Exceptions.RecursoDuplicadoException("La identificación fiscal ya está en uso en la plataforma.");
         }
 
         // Buscar propietario usando el ID extraído del token JWT

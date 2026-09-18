@@ -35,7 +35,8 @@ public class ServicioController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Servicio creado exitosamente con estado 'No Asignado'."),
-            @ApiResponse(responseCode = "400", description = "Error de validación, nombre duplicado o negocio no pertenece al usuario.")
+            @ApiResponse(responseCode = "400", description = "Error de validación o negocio no pertenece al usuario."),
+            @ApiResponse(responseCode = "409", description = "Conflicto: Ya existe un servicio con ese nombre en este negocio.")
     })
     @PostMapping
     public ResponseEntity<?> crearServicio(@Valid @RequestBody ServicioCreateRequest request, Principal principal) {
@@ -48,6 +49,9 @@ public class ServicioController {
                             "mensaje", "Servicio creado exitosamente con estado 'No Asignado'.",
                             "idServicio", servicio.getIdServicio()
                     ));
+        } catch (com.udea.Backend.Plataforma.Exceptions.RecursoDuplicadoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", e.getMessage()));

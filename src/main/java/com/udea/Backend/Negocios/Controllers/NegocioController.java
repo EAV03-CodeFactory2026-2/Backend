@@ -33,7 +33,8 @@ public class NegocioController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Negocio creado y activado exitosamente."),
-            @ApiResponse(responseCode = "400", description = "Error de validación o identificación fiscal duplicada.")
+            @ApiResponse(responseCode = "400", description = "Error de validación o usuario no autorizado."),
+            @ApiResponse(responseCode = "409", description = "Conflicto: La identificación fiscal ya está en uso.")
     })
     @PostMapping("negocios")
     public ResponseEntity<?> crearNegocio(@Valid @RequestBody NegocioCreateRequest request, Principal principal) {
@@ -45,6 +46,9 @@ public class NegocioController {
             // Mensaje de confirmación de registro exitoso
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("mensaje", "Negocio creado y activado exitosamente.", "idNegocio", negocio.getIdNegocio()));
+        } catch (com.udea.Backend.Plataforma.Exceptions.RecursoDuplicadoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", e.getMessage()));

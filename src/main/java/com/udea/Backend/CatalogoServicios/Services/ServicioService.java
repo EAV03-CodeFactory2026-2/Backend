@@ -59,7 +59,7 @@ public class ServicioService {
 
         // Escenario 2: Validación de nombre duplicado (case-insensitive) dentro del mismo negocio
         if (servicioRepository.existsByNegocioIdNegocioAndNombreIgnoreCase(request.getNegocioId(), request.getNombre())) {
-            throw new IllegalArgumentException("Ya existe un servicio con ese nombre en este negocio.");
+            throw new com.udea.Backend.Plataforma.Exceptions.RecursoDuplicadoException("Ya existe un servicio con ese nombre en este negocio.");
         }
 
         // Buscar modalidad
