@@ -1,64 +1,95 @@
 # 📅 Plataforma de Reservas de Servicios - Backend API
 
-Una robusta API monolítica diseñada para la gestión eficiente de citas, reservas y disponibilidad de recursos. Ideal para empresas que ofrecen servicios programados, tales como clínicas, consultorios médicos, salones de belleza y centros deportivos.
+Una robusta API monolítica modular diseñada para la gestión eficiente de citas, reservas y disponibilidad de recursos. Ideal para empresas que ofrecen servicios programados, tales como clínicas, consultorios médicos, salones de belleza y centros deportivos.
 
 ---
 
 ## 📖 Sobre el Proyecto
 
-Esta aplicación web funciona como el núcleo (backend) que permite a las empresas y clientes interactuar de manera fluida en el proceso de agendamiento. 
-
-La solución busca optimizar la planificación de servicios, reducir conflictos de agenda, evitar sobreocupaciones y mejorar significativamente la experiencia tanto de los clientes finales como de los administradores del negocio.
+Esta aplicación web funciona como el núcleo (backend) que permite a las empresas y clientes interactuar de manera fluida en el proceso de agendamiento. La solución busca optimizar la planificación de servicios, reducir conflictos de agenda, evitar sobreocupaciones y mejorar significativamente la experiencia tanto de los clientes finales como de los administradores del negocio.
 
 ## 🚀 Características Principales
 
 ### Para los Usuarios (Clientes)
 * **Consulta de Disponibilidad:** Visualización de horarios libres en tiempo real.
 * **Gestión de Reservas:** Creación, modificación y cancelación de citas de manera autónoma.
-* **Notificaciones:** Recepción de confirmaciones y recordatorios (Vía SMS y Email).
 
-### Para los Proveedores (Administradores)
-* **Gestión de Agendas:** Control total sobre los horarios y la disponibilidad.
-* **Administración de Recursos:** Asignación de personal, salas, equipos, etc.
-* **Reportes y Analíticas:** Generación de métricas sobre ocupación, demanda y rendimiento del negocio.
+### Para los Proveedores (Propietarios)
+* **Gestión Multi-Tenant:** Un mismo propietario puede administrar múltiples negocios bajo una misma cuenta.
+* **Autonomía Inmediata:** Activación de negocios al instante mediante validaciones de integridad fiscal y de dominio.
 
 ---
 
 ## 🛠️ Stack Tecnológico
 
-Este proyecto está construido con un enfoque moderno y escalable utilizando las siguientes tecnologías:
-
 | Capa | Tecnología |
 |------|------------|
-| **Frontend** | *(No aplica – Este repositorio es 100% API REST)* |
-| **Backend** | Java (Spring Boot) |
-| **Base de Datos** | PostgreSQL (Alojada en [Supabase](https://supabase.com/)) |
-| **Notificaciones** | Twilio (SMS) / SendGrid (Email) |
-| **Infraestructura / Deploy** | Docker, Kubernetes, o PaaS como [Render](https://render.com/) |
-
----
-
-## 🏗️ Arquitectura y Roadmap
-
-Actualmente, el proyecto está estructurado como un **Monolito**. Esta decisión permite iterar rápido, mantener la simplicidad en el despliegue inicial y centralizar la lógica de negocio.
-
-**🗺️ Roadmap Futuro:**
-- [ ] Completar flujos de reserva (Monolito).
-- [ ] **Evolución a Segregacion de WebAPIs:** Refactorización progresiva para separar dominios clave en diferentes Web APIs independientes (ej. Servicio de Notificaciones, Servicio de Usuarios, Servicio de Reservas) para permitir escalabilidad independiente.
+| **Backend** | Java 21 (Spring Boot 3+) / Spring Modulith |
+| **Base de Datos** | PostgreSQL (Supabase) + Spring Data JPA |
+| **Seguridad** | Spring Security + JSON Web Tokens (JJWT) + BCrypt |
+| **Documentación** | Springdoc OpenAPI (Swagger UI) |
+| **Validaciones** | Jakarta Bean Validation |
 
 ---
 
 ## ⚙️ Configuración y Despliegue (Local)
 
-### Requisitos Previos
-* **Java 17** o superior.
-* **Maven** (o Gradle, dependiendo de tu configuración).
-* Acceso a una base de datos **PostgreSQL** (Supabase).
-* Credenciales de **Twilio** y **SendGrid** para el envío de notificaciones.
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/tu-usuario/plataforma-reservas-backend.git
+cd plataforma-reservas-backend
+```
 
-### Pasos de Instalación
+### 2. Configurar base de datos
+Asegúrate de tener configurados los parámetros de base de datos en `src/main/resources/application.properties` o inyectados mediante variables de entorno (recomendado para credenciales en producción).
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone [https://github.com/tu-usuario/plataforma-reservas-backend.git](https://github.com/tu-usuario/plataforma-reservas-backend.git)
-   cd plataforma-reservas-backend
+### 3. Compilar y Ejecutar
+Para iniciar la aplicación usando el Wrapper de Maven (el puerto por defecto es `8080`):
+```bash
+# En Linux/Mac
+./mvnw spring-boot:run
+
+# En Windows
+mvnw.cmd spring-boot:run
+```
+
+---
+
+## 🌱 Datos Iniciales Automáticos (Seeders)
+
+Para facilitar las pruebas y el despliegue en entornos nuevos, el sistema cuenta con scripts que se ejecutan automáticamente al arrancar si la base de datos está vacía. Éstos pre-cargan:
+
+1. **Catálogo de Roles:** `Cliente`, `Proveedor` y `Propietario`.
+2. **Catálogo de Monedas:** Principales divisas ISO 4217 (`COP`, `USD`, `EUR`, `MXN`, etc.).
+3. **Usuario Administrador de Pruebas:**
+   - **Correo:** `admin@admin.com`
+   - **Contraseña:** `12345` (Protegida con hash BCrypt)
+   - **Rol Asignado:** Propietario
+
+---
+
+## 🔐 Seguridad y Autenticación
+
+La API está protegida por un filtro **Stateless** usando **JWT**. Salvo los catálogos públicos y rutas de sistema, todo endpoint exige autenticación.
+
+**Flujo estándar:**
+1. Realizar una petición `POST` a `/api/v1/auth/login` con tus credenciales.
+2. El sistema devuelve un token criptográfico.
+3. Consumir los endpoints privados enviando el token en la cabecera HTTP: 
+   `Authorization: Bearer <TU_TOKEN>`
+
+El ID del usuario se extrae automáticamente desde la firma del JWT, previniendo vulnerabilidades de suplantación de identidad (spoofing).
+
+---
+
+## 📚 Documentación Interactiva de la API (Swagger)
+
+El proyecto cuenta con **OpenAPI 3** integrado. Una vez que el servidor esté corriendo, puedes explorar todos los endpoints, ver los modelos de datos y lanzar peticiones de prueba desde tu navegador.
+
+👉 **Acceso a la interfaz:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+### ¿Cómo autenticarse dentro de Swagger?
+1. Llama al endpoint de login (`/api/v1/auth/login`) con el usuario de pruebas u otro que hayas creado.
+2. Copia el texto devuelto en la propiedad `"token"`.
+3. Haz clic en el botón verde **"Authorize 🔒"** situado en la parte superior derecha de la pantalla de Swagger.
+4. Pega tu token en la caja de texto y guarda. A partir de ese momento, Swagger enviará tu token automáticamente en todas las peticiones a rutas protegidas.
