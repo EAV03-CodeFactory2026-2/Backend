@@ -29,8 +29,8 @@ CREATE TABLE asignacion_rol (
   rol_id INTEGER NOT NULL,
   PRIMARY KEY (usuario_id, rol_id),
 
-  CONSTRAINT fk_asignacion_usuario 
-    FOREIGN KEY (usuario_id) 
+  CONSTRAINT fk_asignacion_usuario
+    FOREIGN KEY (usuario_id)
     REFERENCES usuario(id_usuario)
     ON DELETE CASCADE,
 
@@ -39,7 +39,6 @@ CREATE TABLE asignacion_rol (
     REFERENCES rol(id_rol)
     ON DELETE RESTRICT
 );
-
 
 CREATE TABLE negocio (
   id_negocio SERIAL PRIMARY KEY,
@@ -53,13 +52,17 @@ CREATE TABLE negocio (
 
   CONSTRAINT fk_negocio_propietario
     FOREIGN KEY (propietario_id)
-    REFERENCES propietario(usuario_id)
+    REFERENCES usuario(id_usuario)
     ON DELETE RESTRICT,
   
   CONSTRAINT fk_negocio_moneda
     FOREIGN KEY (moneda_codigo_iso)
     REFERENCES moneda(moneda_codigo_iso)
-    ON DELETE RESTRICT
+    ON DELETE RESTRICT,
+  
+  CONSTRAINT chk_longitud_nombre_negocio CHECK (LENGTH(TRIM(nombre_negocio)) >= 3),
+
+  CONSTRAINT chk_longitud_negocio_identificacion_fiscal CHECK (LENGTH(TRIM(identificacion_fiscal)) >= 9)
 );
 
 CREATE UNIQUE INDEX idx_negocio_identificacion_fiscal_ci
@@ -92,3 +95,37 @@ CREATE TABLE servicio (
 
 CREATE UNIQUE INDEX idx_servicio_negocio_nombre_ci
 ON servicio (negocio_id, LOWER(nombre));
+
+
+INSERT INTO rol (nombre_rol) VALUES
+  ('Cliente'),
+  ('Proveedor'),
+  ('Propietario');
+
+INSERT INTO moneda (moneda_codigo_iso, nombre_moneda) VALUES
+  ('COP', 'Peso Colombiano'),
+  ('MXN', 'Peso Mexicano'),
+  ('ARS', 'Peso Argentino'),
+  ('CLP', 'Peso Chileno'),
+  ('PEN', 'Sol Peruano'),
+  ('BRL', 'Real Brasileño'),
+  ('CRC', 'Colón Costarricense'),
+  ('DOP', 'Peso Dominicano'),
+  ('GTQ', 'Quetzal Guatemalteco'),
+  ('HNL', 'Lempira Hondureño'),
+  ('NIO', 'Córdoba Nicaragüense'),
+  ('PAB', 'Balboa Panameño'),
+  ('PYG', 'Guaraní Paraguayo'),
+  ('UYU', 'Peso Uruguayo'),
+  ('VES', 'Bolívar'),
+  ('USD', 'Dólar Estadounidense'),
+  ('EUR', 'Euro'),
+  ('GBP', 'Libra Esterlina'),
+  ('CAD', 'Dólar Canadiense'),
+  ('CHF', 'Franco Suizo'),
+  ('JPY', 'Yen Japonés'),
+  ('AUD', 'Dólar Australiano');
+
+INSERT INTO modalidad_servicio (nombre_modalidad) VALUES
+  ('Presencial'),
+  ('Virtual');
