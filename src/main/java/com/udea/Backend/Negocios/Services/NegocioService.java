@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NegocioService {
@@ -55,5 +57,27 @@ public class NegocioService {
                 .build();
 
         return negocioRepository.save(negocio);
+    }
+
+    /**
+     * Lista todos los negocios que pertenecen al usuario autenticado.
+     * Valida que el usuario exista y tenga el rol de Propietario.
+     *
+     * @param usuarioIdAutenticado ID del usuario extraído del JWT.
+     * @return Lista de negocios del propietario.
+     */
+    @Transactional(readOnly = true)
+    public List<Negocio> listarMisNegocios(Integer usuarioIdAutenticado) {
+        Usuario propietario = usuarioRepository.findById(usuarioIdAutenticado)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+
+        boolean esPropietario = propietario.getRoles().stream()
+                .anyMatch(rol -> rol.getNombreRol().equals(TipoRol.PROPIETARIO.getNombre()));
+
+        if (!esPropietario) {
+            throw new IllegalArgumentException("El usuario no tiene el rol de Propietario.");
+        }
+
+        return negocioRepository.findByPropietarioIdUsuario(usuarioIdAutenticado);
     }
 }

@@ -3,6 +3,10 @@ package com.udea.Backend.Negocios.Controllers;
 import com.udea.Backend.Negocios.Controllers.DTOs.NegocioCreateRequest;
 import com.udea.Backend.Negocios.Entities.Negocio;
 import com.udea.Backend.Negocios.Services.NegocioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,13 +20,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/negocios")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Tag(name = "Negocios", description = "Gestión de negocios del propietario (registro y administración)")
 public class NegocioController {
 
     private final NegocioService negocioService;
 
-    @PostMapping
+    @Operation(
+            summary = "Registrar un nuevo negocio",
+            description = "Crea un negocio vinculado al propietario autenticado (extraído del JWT). El negocio se activa de inmediato sin necesidad de aprobación. Requiere rol de Propietario."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Negocio creado y activado exitosamente."),
+            @ApiResponse(responseCode = "400", description = "Error de validación o identificación fiscal duplicada.")
+    })
+    @PostMapping("negocios")
     public ResponseEntity<?> crearNegocio(@Valid @RequestBody NegocioCreateRequest request, Principal principal) {
         try {
             // El Filtro JWT ya se encarga de inyectar el ID del usuario en el getName() del principal
@@ -38,7 +51,25 @@ public class NegocioController {
         }
     }
 
-    // Escenarios 4 y 5: Manejo de errores de validación de campos vacíos o longitudes inválidas
+    @Operation(
+            summary = "Listar mis negocios",
+            description = "Retorna todos los negocios que pertenecen al usuario autenticado (Propietario). El ID del propietario se extrae automáticamente del token JWT."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Listado de negocios retornado exitosamente."),
+            @ApiResponse(responseCode = "400", description = "El usuario no tiene el rol de Propietario.")
+    })
+    @GetMapping("negocios")
+    public ResponseEntity<?> listarMisNegocios(Principal principal) {
+        try {
+            Integer usuarioId = Integer.parseInt(principal.getName());
+            return ResponseEntity.ok(negocioService.listarMisNegocios(usuarioId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

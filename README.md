@@ -17,6 +17,7 @@ Esta aplicación web funciona como el núcleo (backend) que permite a las empres
 ### Para los Proveedores (Propietarios)
 * **Gestión Multi-Tenant:** Un mismo propietario puede administrar múltiples negocios bajo una misma cuenta.
 * **Autonomía Inmediata:** Activación de negocios al instante mediante validaciones de integridad fiscal y de dominio.
+* **Catálogo de Servicios:** Creación y gestión de servicios asociados a sus negocios con modalidades configurables (Presencial/Virtual), precios, duraciones y estado inicial "No Asignado".
 
 ---
 
@@ -61,7 +62,8 @@ Para facilitar las pruebas y el despliegue en entornos nuevos, el sistema cuenta
 
 1. **Catálogo de Roles:** `Cliente`, `Proveedor` y `Propietario`.
 2. **Catálogo de Monedas:** Principales divisas ISO 4217 (`COP`, `USD`, `EUR`, `MXN`, etc.).
-3. **Usuario Administrador de Pruebas:**
+3. **Catálogo de Modalidades:** Modalidades de servicio predefinidas (`Presencial`, `Virtual`).
+4. **Usuario Administrador de Pruebas:**
    - **Correo:** `admin@admin.com`
    - **Contraseña:** `12345` (Protegida con hash BCrypt)
    - **Rol Asignado:** Propietario
@@ -79,6 +81,21 @@ La API está protegida por un filtro **Stateless** usando **JWT**. Salvo los cat
    `Authorization: Bearer <TU_TOKEN>`
 
 El ID del usuario se extrae automáticamente desde la firma del JWT, previniendo vulnerabilidades de suplantación de identidad (spoofing).
+
+---
+
+## 📌 Endpoints Principales
+
+| Módulo | Método | Ruta | Descripción | Requiere Auth |
+|---|---|---|---|:---:|
+| **Health** | `GET` | `/api/v1/health` | Estado del servidor | ❌ |
+| **Autenticación** | `POST` | `/api/v1/auth/login` | Inicio de sesión y emisión de JWT | ❌ |
+| **Plataforma** | `GET` | `/api/v1/monedas` | Catálogo de monedas (ISO 4217) | ✅ |
+| **Negocios** | `POST` | `/api/v1/negocios` | Registrar nuevo negocio | ✅ (Propietario) |
+| **Negocios** | `GET` | `/api/v1/negocios` | Listar negocios del propietario autenticado | ✅ (Propietario) |
+| **Catálogo** | `GET` | `/api/v1/modalidades` | Listar modalidades (Presencial / Virtual) | ✅ |
+| **Catálogo** | `POST` | `/api/v1/servicios` | Registrar nuevo servicio en un negocio | ✅ (Propietario) |
+| **Catálogo** | `GET` | `/api/v1/servicios/negocio/{negocioId}` | Listar catálogo de servicios de un negocio | ✅ |
 
 ---
 
