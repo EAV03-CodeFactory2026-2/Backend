@@ -104,27 +104,12 @@ INSERT INTO rol (nombre_rol) VALUES
 
 INSERT INTO moneda (moneda_codigo_iso, nombre_moneda) VALUES
   ('COP', 'Peso Colombiano'),
-  ('MXN', 'Peso Mexicano'),
-  ('ARS', 'Peso Argentino'),
-  ('CLP', 'Peso Chileno'),
-  ('PEN', 'Sol Peruano'),
-  ('BRL', 'Real Brasileño'),
-  ('CRC', 'Colón Costarricense'),
-  ('DOP', 'Peso Dominicano'),
-  ('GTQ', 'Quetzal Guatemalteco'),
-  ('HNL', 'Lempira Hondureño'),
-  ('NIO', 'Córdoba Nicaragüense'),
-  ('PAB', 'Balboa Panameño'),
-  ('PYG', 'Guaraní Paraguayo'),
-  ('UYU', 'Peso Uruguayo'),
-  ('VES', 'Bolívar'),
   ('USD', 'Dólar Estadounidense'),
   ('EUR', 'Euro'),
-  ('GBP', 'Libra Esterlina'),
-  ('CAD', 'Dólar Canadiense'),
-  ('CHF', 'Franco Suizo'),
-  ('JPY', 'Yen Japonés'),
-  ('AUD', 'Dólar Australiano');
+  ('MXN', 'Peso Mexicano'),
+  ('ARS', 'Peso Argentino'),
+  ('PEN', 'Sol Peruano'),
+  ('CLP', 'Peso Chileno');
 
 INSERT INTO modalidad_servicio (nombre_modalidad) VALUES
   ('Presencial'),
