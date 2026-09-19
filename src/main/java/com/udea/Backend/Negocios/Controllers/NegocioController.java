@@ -2,7 +2,7 @@ package com.udea.Backend.Negocios.Controllers;
 
 import com.udea.Backend.Negocios.Controllers.DTOs.NegocioCreateRequest;
 import com.udea.Backend.Negocios.Entities.Negocio;
-import com.udea.Backend.Negocios.Services.NegocioService;
+import com.udea.Backend.Negocios.Services.INegocioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Tag(name = "Negocios", description = "Gestión de negocios del propietario (registro y administración)")
 public class NegocioController {
 
-    private final NegocioService negocioService;
+    private final INegocioService negocioService;
 
     @Operation(
             summary = "Registrar un nuevo negocio",

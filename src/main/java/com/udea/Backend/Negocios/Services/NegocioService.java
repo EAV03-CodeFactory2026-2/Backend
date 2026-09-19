@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class NegocioService {
+public class NegocioService implements INegocioService {
 
     private final NegocioRepository negocioRepository;
     private final UsuarioRepository usuarioRepository;

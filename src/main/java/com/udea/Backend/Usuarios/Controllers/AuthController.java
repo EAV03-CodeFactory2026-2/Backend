@@ -2,7 +2,7 @@ package com.udea.Backend.Usuarios.Controllers;
 
 import com.udea.Backend.Usuarios.Controllers.DTOs.AuthResponse;
 import com.udea.Backend.Usuarios.Controllers.DTOs.LoginRequest;
-import com.udea.Backend.Usuarios.Services.AuthService;
+import com.udea.Backend.Usuarios.Services.IAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,7 +21,7 @@ import java.util.Map;
 @Tag(name = "Autenticación", description = "Endpoints para el inicio de sesión y obtención de tokens JWT")
 public class AuthController {
 
-    private final AuthService authService;
+    private final IAuthService authService;
 
     @Operation(
             summary = "Iniciar sesión",

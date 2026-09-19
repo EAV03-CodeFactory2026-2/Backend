@@ -19,7 +19,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
 
     @Override
     protected void doFilterInternal(

@@ -2,7 +2,7 @@ package com.udea.Backend.CatalogoServicios.Controllers;
 
 import com.udea.Backend.CatalogoServicios.Controllers.DTOs.ServicioCreateRequest;
 import com.udea.Backend.CatalogoServicios.Entities.Servicio;
-import com.udea.Backend.CatalogoServicios.Services.ServicioService;
+import com.udea.Backend.CatalogoServicios.Services.IServicioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +27,7 @@ import java.util.Map;
 @Tag(name = "Servicios", description = "Gestión del catálogo de servicios de un negocio")
 public class ServicioController {
 
-    private final ServicioService servicioService;
+    private final IServicioService servicioService;
 
     @Operation(
             summary = "Registrar un nuevo servicio",

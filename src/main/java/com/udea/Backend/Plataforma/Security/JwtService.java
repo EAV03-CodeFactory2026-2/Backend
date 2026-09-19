@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtService implements IJwtService {
 
     // Llave secreta para firmar los tokens (En producción debe ir en application.properties)
     private static final String SECRET = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";

@@ -1,6 +1,6 @@
 package com.udea.Backend.Usuarios.Services;
 
-import com.udea.Backend.Plataforma.Security.JwtService;
+import com.udea.Backend.Plataforma.Security.IJwtService;
 import com.udea.Backend.Usuarios.Controllers.DTOs.AuthResponse;
 import com.udea.Backend.Usuarios.Controllers.DTOs.LoginRequest;
 import com.udea.Backend.Usuarios.Entities.Usuario;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService implements IAuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
 
     public AuthResponse login(LoginRequest request) {
         Usuario usuario = usuarioRepository.findByCorreo(request.getCorreo())
