@@ -5,8 +5,8 @@ import com.udea.Backend.Usuarios.Entities.TipoRol;
 import com.udea.Backend.Usuarios.Entities.Usuario;
 import com.udea.Backend.Usuarios.Repositories.RolRepository;
 import com.udea.Backend.Usuarios.Repositories.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,13 +15,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Order(2) // Se ejecuta DESPUÉS del RolDataSeeder
-@RequiredArgsConstructor
 @Slf4j
 public class UsuarioDataSeeder implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
+
+    // Credenciales del administrador inicial (variables de entorno ADMIN_EMAIL y ADMIN_PASSWORD).
+    private final String adminEmail;
+    private final String adminPassword;
+
+    public UsuarioDataSeeder(UsuarioRepository usuarioRepository,
+                             RolRepository rolRepository,
+                             PasswordEncoder passwordEncoder,
+                             @Value("${app.admin.email}") String adminEmail,
+                             @Value("${app.admin.password}") String adminPassword) {
+        this.usuarioRepository = usuarioRepository;
+        this.rolRepository = rolRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
+    }
 
     @Override
     @Transactional
@@ -37,9 +52,9 @@ public class UsuarioDataSeeder implements CommandLineRunner {
             Usuario adminUser = Usuario.builder()
                     .nombre("Admin")
                     .apellido("Propietario")
-                    .correo("admin@admin.com")
+                    .correo(adminEmail)
                     .telefono("0000000000") // Obligatorio según el SQL original
-                    .contrasena(passwordEncoder.encode("12345")) // BCrypt es el estándar inyectado en SecurityConfig
+                    .contrasena(passwordEncoder.encode(adminPassword)) // BCrypt es el estándar inyectado en SecurityConfig
                     .estado("Activo")
                     .build();
 
@@ -48,7 +63,7 @@ public class UsuarioDataSeeder implements CommandLineRunner {
 
             usuarioRepository.save(adminUser);
             
-            log.info("Usuario inicial creado exitosamente: admin@admin.com / 12345");
+            log.info("Usuario inicial creado exitosamente: {}", adminEmail);
         } else {
             log.info("La tabla 'usuario' ya contiene datos. Se omite la inicialización de usuario por defecto.");
         }

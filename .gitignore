@@ -1,5 +1,10 @@
 HELP.md
 target/
+
+### Variables de entorno (NUNCA versionar credenciales) ###
+.env*
+!.env.example
+
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
