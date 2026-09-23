@@ -138,7 +138,7 @@ El ID del usuario se extrae automáticamente desde la firma del JWT, previniendo
 
 El proyecto cuenta con **OpenAPI 3** integrado. Una vez que el servidor esté corriendo, puedes explorar todos los endpoints, ver los modelos de datos y lanzar peticiones de prueba desde tu navegador.
 
-👉 **Acceso a la interfaz:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+👉 **Acceso a la interfaz:** [https://backend-a5i8.onrender.com/swagger-ui/index.html](https://backend-a5i8.onrender.com/swagger-ui/index.html)
 
 ### ¿Cómo autenticarse dentro de Swagger?
 1. Llama al endpoint de login (`/api/v1/auth/login`) con el usuario de pruebas u otro que hayas creado.
