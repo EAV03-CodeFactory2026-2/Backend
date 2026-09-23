@@ -3,6 +3,7 @@ package com.udea.Backend.Plataforma.Security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,11 +13,20 @@ import java.util.function.Function;
 @Service
 public class JwtService implements IJwtService {
 
-    // Llave secreta para firmar los tokens (En producción debe ir en application.properties)
-    private static final String SECRET = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    // Llave secreta (Base64) para firmar los tokens. Se inyecta desde la variable de entorno JWT_SECRET.
+    private final String secret;
+
+    // Tiempo de vida del token en milisegundos (variable de entorno JWT_EXPIRATION_MS).
+    private final long expirationMs;
+
+    public JwtService(@Value("${app.jwt.secret}") String secret,
+                      @Value("${app.jwt.expiration-ms}") long expirationMs) {
+        this.secret = secret;
+        this.expirationMs = expirationMs;
+    }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -54,7 +64,7 @@ public class JwtService implements IJwtService {
         return Jwts.builder()
                 .subject(String.valueOf(usuarioId))
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 horas
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSigningKey())
                 .compact();
     }

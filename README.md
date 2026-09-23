@@ -41,8 +41,43 @@ git clone https://github.com/tu-usuario/plataforma-reservas-backend.git
 cd plataforma-reservas-backend
 ```
 
-### 2. Configurar base de datos
-Asegúrate de tener configurados los parámetros de base de datos en `src/main/resources/application.properties` o inyectados mediante variables de entorno (recomendado para credenciales en producción).
+### 2. Configurar variables de entorno
+El proyecto **no almacena credenciales en el código**: la base de datos, la llave JWT y el usuario
+administrador inicial se leen de variables de entorno.
+
+Copia la plantilla y completa los valores de tu entorno:
+```bash
+# En Linux/Mac
+cp .env.example .env
+
+# En Windows
+copy .env.example .env
+```
+
+`application.properties` importa ese archivo de forma opcional
+(`spring.config.import=optional:file:.env[.properties]`), por lo que en local basta con el `.env`
+y en despliegue basta con definir las variables en el proveedor.
+
+| Variable | Descripción | Por defecto |
+|---|---|---|
+| `DB_HOST` | Host de PostgreSQL | *(requerido)* |
+| `DB_PORT` | Puerto de PostgreSQL | `5432` |
+| `DB_NAME` | Nombre de la base de datos | *(requerido)* |
+| `DB_USERNAME` | Usuario de la base de datos | *(requerido)* |
+| `DB_PASSWORD` | Contraseña de la base de datos | *(requerido)* |
+| `DB_SSLMODE` | Modo SSL de la conexión | `require` |
+| `JPA_DDL_AUTO` | Estrategia de Hibernate | `update` |
+| `JWT_SECRET` | Llave Base64 (mínimo 32 bytes) para firmar los tokens | *(requerido)* |
+| `JWT_EXPIRATION_MS` | Vigencia del token en milisegundos | `86400000` (24 h) |
+| `ADMIN_EMAIL` | Correo del administrador inicial | *(requerido)* |
+| `ADMIN_PASSWORD` | Contraseña del administrador inicial | *(requerido)* |
+| `PORT` | Puerto del servidor | `8080` |
+
+> El archivo `.env` está en `.gitignore`. Nunca subas credenciales reales al repositorio.
+
+### 2.1. Despliegue en Render
+En el servicio de Render, registra las mismas claves en **Environment > Environment Variables**
+(sin subir el `.env`). Render inyecta `PORT` automáticamente, así que no necesitas definirla.
 
 ### 3. Compilar y Ejecutar
 Para iniciar la aplicación usando el Wrapper de Maven (el puerto por defecto es `8080`):
