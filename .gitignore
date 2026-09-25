@@ -36,3 +36,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Archivos locales ###
+Thumbs.db
+desktop.ini
+.DS_Store
